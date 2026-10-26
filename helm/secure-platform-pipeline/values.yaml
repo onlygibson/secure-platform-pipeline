@@ -1,0 +1,16 @@
+replicaCount: 1
+
+image:
+  # kind loads this local image; Phase 3 switches to a signed image in Artifactory
+  repository: secure-platform-pipeline
+  tag: "0.1.0"
+  pullPolicy: IfNotPresent
+
+service:
+  type: ClusterIP
+  port: 80
+  targetPort: 8080
+
+# Phase 1 leaves these empty on purpose. Phase 5 makes Kyverno require them.
+resources: {}
+securityContext: {}
