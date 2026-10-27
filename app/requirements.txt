@@ -5,7 +5,7 @@ jinja2==2.10
 werkzeug==0.15.5
 requests==2.19.1
 pyyaml==5.3
-urllib3==1.23
+urllib3==2.8.0
 # Compatible versions needed for the old stack to run
 markupsafe==1.1.1
 itsdangerous==0.24
