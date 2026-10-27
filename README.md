@@ -68,5 +68,7 @@ Before-and-after numbers are recorded here as each phase lands.
 
 | Metric | Before | After |
 | --- | --- | --- |
+| Dependabot alerts | 41 |TBD
+| Code scanning alerts | 1 | TBD |
 | Critical/high CVEs in image | TBD | TBD |
 | Findings shown to developers per PR | TBD | TBD |
