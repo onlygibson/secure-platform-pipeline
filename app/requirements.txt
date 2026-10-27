@@ -3,7 +3,7 @@
 flask==0.12.2
 jinja2==2.10
 werkzeug==0.15.5
-requests==2.19.1
+requests==2.33.0
 pyyaml==5.3
 urllib3==1.23
 # Compatible versions needed for the old stack to run
