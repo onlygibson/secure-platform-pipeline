@@ -1,6 +1,6 @@
 # INTENTIONALLY OUTDATED for security-tooling practice. Do not reuse.
 # Each pinned version has known CVEs that scanners should report.
-flask==0.12.2
+flask==3.1.3
 jinja2==2.10
 werkzeug==0.15.5
 requests==2.19.1
