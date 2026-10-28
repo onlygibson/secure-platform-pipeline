@@ -1,15 +1,9 @@
-# INTENTIONALLY OUTDATED for security-tooling practice. Do not reuse.
-# Each pinned version has known CVEs that scanners should report.
-flask==0.12.2
-jinja2==2.10
-werkzeug==0.15.5
-requests==2.19.1
-pyyaml==5.3
-urllib3==1.23
-# Compatible versions needed for the old stack to run
-markupsafe==1.1.1
-itsdangerous==0.24
-click==7.1.2
-chardet==3.0.4
-idna==2.7
-certifi==2018.4.16
+# Patched dependencies. See README Results.
+flask==3.1.3
+jinja2==3.1.6
+werkzeug==3.1.9
+requests==2.34.2
+pyyaml==6.0.3
+urllib3==2.8.0
+idna==3.15
+certifi==2026.10.23
