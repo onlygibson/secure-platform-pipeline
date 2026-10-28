@@ -35,7 +35,7 @@ def load_config():
     Deliberate weakness: yaml.load without a safe loader. CodeQL should
     flag this in Phase 2. The fix is yaml.safe_load.
     """
-    data = yaml.load(request.get_data(), Loader=yaml.Loader)  # noqa: S506
+    data = yaml.safe_load(request.get_data())
     return jsonify(parsed=data)
 
 
