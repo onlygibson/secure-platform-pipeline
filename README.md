@@ -72,3 +72,5 @@ Before-and-after numbers are recorded here as each phase lands.
 | Code scanning alerts | 1 | TBD |
 | Critical/high CVEs in image | TBD | TBD |
 | Findings shown to developers per PR | TBD | TBD |
+
+Main is protected: changes need a PR and a passing CI check.
