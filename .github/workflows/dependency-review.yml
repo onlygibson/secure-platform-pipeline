@@ -8,11 +8,8 @@ jobs:
   dependency-review:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
+      - name: Check out code
         uses: actions/checkout@v4
-
-      - name: Block vulnerable dependencies
-        uses: actions/dependency-review-action@v4
 
       - name: Block vulnerable dependencies
         uses: actions/dependency-review-action@v4
