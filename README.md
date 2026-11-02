@@ -64,13 +64,19 @@ policies/            Phase 5: Kyverno policies
 
 ## Results
 
-Before-and-after numbers are recorded here as each phase lands.
-
 | Metric | Before | After |
 | --- | --- | --- |
-| Dependabot alerts | 41 | 0 |
-| Code scanning alerts | 1 | TBD |
-| Critical/high CVEs in image | TBD | TBD |
-| Findings shown to developers per PR | TBD | TBD |
+| Dependabot alerts | 41 (2 critical, 14 high, 23 moderate, 2 low) | 0 |
+| Code scanning alerts | 1 (critical: unsafe YAML deserialization) | 0 |
 
-Main is protected: changes need a PR and a passing CI check.
+## Guardrails on `main`
+
+Every change goes through a pull request. Nothing merges unless these pass:
+
+| Check | What it blocks | How it was tested |
+| --- | --- | --- |
+| CI: build and smoke test | A broken build, or a reintroduced `yaml.load` attack | First run failed on startup timing; fixed |
+| Dependency review | PRs that add a library with a high or critical vulnerability | PR downgrading PyYAML to 5.3 was blocked while CI passed |
+| CodeQL | Unsafe code patterns | Caught `yaml.load`; fixed with `yaml.safe_load` |
+| Push protection | Pushes containing secrets | Throwaway token push rejected (GH013); token revoked |
+| Branch ruleset | Direct pushes, force pushes, deleting `main` | Direct push to `main` rejected (GH013) |
