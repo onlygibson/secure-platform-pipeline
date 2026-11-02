@@ -1,0 +1,48 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v4
+
+      - name: Build image
+        run: docker build -t secure-platform-pipeline:${{ github.sha }} .
+
+      - name: Start app
+        run: docker run -d --name app -p 8080:8080 secure-platform-pipeline:${{ github.sha }}
+
+      - name: Health check
+        run: |
+          curl -sf --retry 20 --retry-all-errors --retry-delay 1 \
+            localhost:8080/health | grep -q '"status":"ok"'
+
+      - name: Smoke test - config endpoint accepts valid YAML
+        run: |
+          curl -sf -X POST --data 'a: 1' localhost:8080/config | grep -q '"a":1'
+
+      - name: Security regression - unsafe YAML is rejected
+        run: |
+          code=$(curl -s -o /dev/null -w '%{http_code}' -X POST \
+            --data '!!python/object/apply:os.system ["echo hacked"]' \
+            localhost:8080/config)
+          echo "Status: $code"
+          test "$code" != "200"
+
+      - name: Show app logs on failure
+        if: failure()
+        run: docker logs app
