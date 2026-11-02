@@ -28,7 +28,7 @@ jobs:
 
       - name: Health check
         run: |
-          curl -sf --retry 20 --retry-connrefused --retry-delay 1 \
+          curl -sf --retry 20 --retry-all-errors --retry-delay 1 \
             localhost:8080/health | grep -q '"status":"ok"'
 
       - name: Smoke test - config endpoint accepts valid YAML
