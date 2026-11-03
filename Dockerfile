@@ -14,5 +14,7 @@ COPY app/ .
 
 EXPOSE 8080
 
-# Deliberately runs as root. Kyverno will block this in Phase 5.
+RUN useradd --system --uid 10001 --no-create-home --shell /usr/sbin/nologin appuser
+USER 10001
+
 CMD ["python", "app.py"]
