@@ -23,6 +23,17 @@ jobs:
       - name: Build image
         run: docker build -t secure-platform-pipeline:${{ github.sha }} .
 
+      - name: Scan image for fixable HIGH/CRITICAL vulnerabilities
+        run: |
+          docker run --rm -v /var/run/docker.sock:/var/run/docker.sock \
+            aquasec/trivy:latest image --scanners vuln --ignore-unfixed \
+            --severity HIGH,CRITICAL --exit-code 1 \
+            secure-platform-pipeline:${{ github.sha }}
+      
+      - name: Scan Dockerfile and Helm charts for HIGH/CRITICAL misconfigurations
+        run: |
+          docker run --rm -v "$PWD":/src \
+            aquasec/trivy:latest config --severity HIGH,CRITICAL --exit-code 1 /src
       - name: Start app
         run: docker run -d --name app -p 8080:8080 secure-platform-pipeline:${{ github.sha }}
 
