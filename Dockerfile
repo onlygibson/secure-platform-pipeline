@@ -1,14 +1,20 @@
-# Faster builds: single pip step, configurable port for local dev
+
+# Python 3.13: required by Flask 3.1 / requests 2.33, supported until 2029.
 FROM python:3.13-slim
 
 WORKDIR /app
 
 COPY app/requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
+# Install dependencies, then remove pip: the app never uses it at runtime,
+# and its bundled libraries carry known vulnerabilities (found by Trivy).
+RUN pip install --no-cache-dir -r requirements.txt \
+ && pip uninstall -y pip
 
 COPY app/ .
 
-ENV PORT=5000
 EXPOSE 8080
+
+RUN useradd --system --uid 10001 --no-create-home --shell /usr/sbin/nologin appuser
+USER 10001
 
 CMD ["python", "app.py"]
