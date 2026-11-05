@@ -36,7 +36,18 @@ jobs:
             aquasec/trivy:latest config --severity HIGH,CRITICAL --exit-code 1 /src
       - name: Start app
         run: docker run -d --name app -p 8080:8080 secure-platform-pipeline:${{ github.sha }}
+      - name: Generate SBOM (CycloneDX)
+        run: |
+          docker run --rm -v /var/run/docker.sock:/var/run/docker.sock \
+            aquasec/trivy:latest image --format cyclonedx --quiet \
+            secure-platform-pipeline:${{ github.sha }} > sbom.json
 
+      - name: Upload SBOM as build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: sbom-${{ github.sha }}
+          path: sbom.json
+          retention-days: 30
       - name: Health check
         run: |
           curl -sf --retry 20 --retry-all-errors --retry-delay 1 \
