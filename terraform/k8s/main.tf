@@ -5,6 +5,10 @@ terraform {
       source  = "hashicorp/kubernetes"
       version = "~> 2.30"
     }
+    helm = {
+      source  = "hashicorp/helm"
+      version = "~> 2.17"
+    }
   }
 }
 
@@ -33,5 +37,12 @@ resource "kubernetes_config_map_v1" "app_settings" {
   data = {
     LOG_LEVEL = "info"
     DEBUG     = "false"
+  }
+}
+
+provider "helm" {
+  kubernetes {
+    config_path    = "~/.kube/config"
+    config_context = "kind-spp"
   }
 }
