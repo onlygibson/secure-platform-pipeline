@@ -1,0 +1,27 @@
+# Platform guardrail: no container may run as root.
+apiVersion: policies.kyverno.io/v1
+kind: ValidatingPolicy
+metadata:
+  name: disallow-root-user
+spec:
+  validationActions: [Deny]
+  matchConstraints:
+    resourceRules:
+      - apiGroups: [""]
+        apiVersions: ["v1"]
+        operations: ["CREATE", "UPDATE"]
+        resources: ["pods"]
+    namespaceSelector:
+      matchExpressions:
+        - key: kubernetes.io/metadata.name
+          operator: NotIn
+          values: [kube-system, kyverno, local-path-storage]
+  validations:
+    - expression: >-
+        object.spec.containers.all(c,
+          has(c.securityContext) && has(c.securityContext.runAsNonRoot)
+            ? c.securityContext.runAsNonRoot == true
+            : has(object.spec.securityContext) &&
+              has(object.spec.securityContext.runAsNonRoot) &&
+              object.spec.securityContext.runAsNonRoot == true)
+      message: "Containers must run as non-root. Set securityContext.runAsNonRoot: true."
