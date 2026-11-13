@@ -32,8 +32,8 @@ def hello():
 def load_config():
     """Parses a YAML body.
 
-    Uses yaml.safe_load. The original yaml.load call was flagged by CodeQL
-    in Phase 2, and CI now checks that an unsafe payload is rejected.
+    Uses yaml.safe_load. The original yaml.load call was flagged by CodeQL,
+    and CI now checks that an unsafe payload is rejected.
     """
     data = yaml.safe_load(request.get_data())
     return jsonify(parsed=data)

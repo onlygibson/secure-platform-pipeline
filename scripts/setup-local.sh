@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Phase 1 local setup: kind cluster + Argo CD + the sample app via GitOps.
+# Local setup: kind cluster + Argo CD + the sample app via GitOps.
 # Requires: docker, kind, kubectl. Run from the repo root.
 set -euo pipefail
 

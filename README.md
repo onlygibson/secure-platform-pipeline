@@ -24,6 +24,25 @@ Merge to main
    -> A Kyverno policy denies pods that are not set to run as non-root
 ```
 
+## What is in the pipeline, and why
+
+| Question | Answer in this repo | Where to look |
+| --- | --- | --- |
+| How do you catch vulnerable libraries? | Dependabot alerts on what is already in the repo. Dependency review blocks a PR that adds a new high or critical vulnerability. (Software composition analysis) | `.github/workflows/dependency-review.yml` |
+| How do you catch insecure code? | CodeQL scans the Python code and the workflow files on every PR. (Static analysis, SAST) | GitHub code scanning, default setup |
+| How do you stop secrets being committed? | Secret scanning with push protection rejects the push before the secret lands | Repo security settings |
+| How do you scan the container image? | Trivy scans the built image and fails the build on fixable HIGH or CRITICAL findings | `.github/workflows/ci.yml` |
+| How do you catch misconfigurations? | Trivy scans the Dockerfile and Helm chart for HIGH or CRITICAL misconfigurations | `.github/workflows/ci.yml` |
+| How do you know what is inside an image? | Every CI run produces a CycloneDX SBOM and saves it as a build artifact | `.github/workflows/ci.yml` |
+| How do you prove an image came from your pipeline? | Images are pushed to GHCR and signed with Cosign keyless signing, using the workflow's own identity instead of a stored key | `publish-and-sign` job in `ci.yml` |
+| How do you test that a fix stays fixed? | CI starts the container and sends a real attack payload to `/config`. The build fails if it is accepted | `ci.yml`, "Security regression" step |
+| How do you stop a bad change reaching `main`? | A branch ruleset requires a pull request and passing checks. Direct and force pushes are rejected | Repo rulesets |
+| How do you limit what the pipeline itself can do? | Workflows default to read-only permissions. Only the publish job can write packages and request a signing token | `permissions:` blocks in the workflows |
+| How do you deploy? | GitOps: Argo CD watches `main` and syncs the Helm chart, and reverts manual changes in the cluster | `argocd/application.yaml` |
+| How do you harden the running container? | Non-root user, read-only filesystem, all capabilities dropped, no privilege escalation, seccomp, resource limits | `helm/secure-platform-pipeline/values.yaml` |
+| How do you enforce rules in the cluster? | A Kyverno policy denies pods that are not set to run as non-root | `policies/disallow-root.yaml` |
+| How is the platform itself managed? | Terraform creates the namespace and installs Kyverno, so the setup is repeatable | `terraform/k8s/` |
+
 ## Problems found, root causes, and fixes
 
 | Problem | Root cause | Fix | What stops it coming back |
