@@ -1,9 +1,10 @@
 #!/usr/bin/env bash
-# Phase 1 local setup: kind cluster + Argo CD + the sample app via GitOps.
+# Local setup: kind cluster + Argo CD + the sample app via GitOps.
 # Requires: docker, kind, kubectl. Run from the repo root.
 set -euo pipefail
 
-IMAGE="secure-platform-pipeline:0.1.0"
+# Keep this tag in step with image.tag in helm/secure-platform-pipeline/values.yaml.
+IMAGE="secure-platform-pipeline:0.6.0"
 
 echo "==> Building image"
 docker build -t "$IMAGE" .
@@ -20,10 +21,6 @@ kubectl apply -n argocd --server-side -f https://raw.githubusercontent.com/argop
 kubectl -n argocd rollout status deploy/argocd-server --timeout=300s
 
 echo "==> Registering the app with Argo CD"
-if grep -q YOUR_GITHUB_USERNAME argocd/application.yaml; then
-  echo "Edit argocd/application.yaml with your GitHub username, push, then rerun." >&2
-  exit 1
-fi
 kubectl apply -f argocd/application.yaml
 
 echo "==> Argo CD admin password:"

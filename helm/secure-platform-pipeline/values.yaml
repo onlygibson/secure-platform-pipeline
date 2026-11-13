@@ -1,7 +1,8 @@
 replicaCount: 1
 
 image:
-  # kind loads this local image; Phase 3 switches to a signed image in Artifactory
+  # kind loads this local image (built by scripts/setup-local.sh, same tag).
+  # CI also publishes a Cosign-signed image to GHCR on every push to main.
   repository: secure-platform-pipeline
   tag: "0.6.0"
   pullPolicy: IfNotPresent
@@ -11,7 +12,7 @@ service:
   port: 80
   targetPort: 8080
 
-resources: 
+resources:
   requests:
     cpu: 50m
     memory: 64Mi
