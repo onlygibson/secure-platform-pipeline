@@ -22,9 +22,9 @@ provider "aws" {
     s3  = "http://localhost:4566"
     iam = "http://localhost:4566"
     sts = "http://localhost:4566"
+    kms = "http://localhost:4566"
   }
 }
-
 # Bucket that stores the SBOMs produced by CI.
 resource "aws_s3_bucket" "sboms" {
   bucket = "spp-sboms"
@@ -38,12 +38,20 @@ resource "aws_s3_bucket_versioning" "sboms" {
   }
 }
 
-# Encrypt everything at rest.
+# Customer-managed key, so we control who can decrypt and can rotate it.
+resource "aws_kms_key" "sboms" {
+  description             = "Encrypts the SBOM bucket"
+  enable_key_rotation     = true
+  deletion_window_in_days = 7
+}
+
+# Encrypt everything at rest with that key.
 resource "aws_s3_bucket_server_side_encryption_configuration" "sboms" {
   bucket = aws_s3_bucket.sboms.id
   rule {
     apply_server_side_encryption_by_default {
-      sse_algorithm = "AES256"
+      sse_algorithm     = "aws:kms"
+      kms_master_key_id = aws_kms_key.sboms.arn
     }
   }
 }
