@@ -1,8 +1,8 @@
 """Sample API for the secure-platform-pipeline project.
 
 This app is the "developer team's service" that the platform secures.
-Its dependencies are intentionally outdated so security scanners have
-real findings to report and fix.
+It started with outdated dependencies and an unsafe YAML loader so the
+security scanners had real findings. Those are now fixed; see the README.
 """
 import os
 
@@ -12,7 +12,7 @@ from flask import Flask, jsonify, request
 
 app = Flask(__name__)
 
-APP_VERSION = os.environ.get("APP_VERSION", "0.1.0")
+APP_VERSION = os.environ.get("APP_VERSION", "0.6.0")
 
 
 @app.route("/health")
@@ -32,8 +32,8 @@ def hello():
 def load_config():
     """Parses a YAML body.
 
-    Deliberate weakness: yaml.load without a safe loader. CodeQL should
-    flag this in Phase 2. The fix is yaml.safe_load.
+    Uses yaml.safe_load. The original yaml.load call was flagged by CodeQL
+    in Phase 2, and CI now checks that an unsafe payload is rejected.
     """
     data = yaml.safe_load(request.get_data())
     return jsonify(parsed=data)
