@@ -108,3 +108,17 @@ jobs:
 
       - name: Sign image (keyless)
         run: cosign sign --yes "${{ steps.push.outputs.digest }}"
+
+  policy-tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Kyverno CLI
+        uses: kyverno/action-install-cli@v0.2.0
+        with:
+          release: v1.19.2
+
+      - name: Test Kyverno policies
+        run: kyverno test policies/tests

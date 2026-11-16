@@ -1,0 +1,23 @@
+# Expected results for disallow-root-user. Run with: kyverno test policies/tests
+apiVersion: cli.kyverno.io/v1alpha1
+kind: Test
+metadata:
+  name: disallow-root-user
+policies:
+  - ../disallow-root.yaml
+resources:
+  - nonroot-pod.yaml
+  - root-pod.yaml
+results:
+  - policy: disallow-root-user
+    isValidatingPolicy: true
+    kind: Pod
+    resources: 
+      - nonroot-test
+    result: pass
+  - policy: disallow-root-user
+    isValidatingPolicy: true
+    kind: Pod
+    resources:
+      - root-test
+    result: fail
