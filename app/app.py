@@ -1,9 +1,3 @@
-"""Sample API for the secure-platform-pipeline project.
-
-This app is the "developer team's service" that the platform secures.
-It started with outdated dependencies and an unsafe YAML loader so the
-security scanners had real findings. Those are now fixed; see the README.
-"""
 import os
 
 import requests
