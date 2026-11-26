@@ -22,7 +22,7 @@ jobs:
       TRIVY_IMAGE: aquasec/trivy:0.76.2
     steps:
       - name: Check out code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Build image
         run: docker build -t "$IMAGE" .
@@ -44,7 +44,7 @@ jobs:
             "$TRIVY_IMAGE" image --format cyclonedx --quiet "$IMAGE" > sbom.json
 
       - name: Upload SBOM as build artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: sbom-${{ github.sha }}
           path: sbom.json
@@ -87,10 +87,10 @@ jobs:
       IMAGE: ghcr.io/${{ github.repository }}
     steps:
       - name: Check out code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Log in to GHCR
-        uses: docker/login-action@v3
+        uses: docker/login-action@v4
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
@@ -113,7 +113,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: Install Kyverno CLI
         uses: kyverno/action-install-cli@v0.2.0
