@@ -41,7 +41,7 @@ resource "kubernetes_config_map_v1" "app_settings" {
 }
 
 provider "helm" {
-  kubernetes {
+  kubernetes = {
     config_path    = "~/.kube/config"
     config_context = "kind-spp"
   }
