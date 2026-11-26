@@ -6,16 +6,9 @@ resource "helm_release" "kyverno" {
   namespace        = "kyverno"
   create_namespace = true
 
-  set {
-    name  = "backgroundController.enabled"
-    value = "false"
-  }
-  set {
-    name  = "cleanupController.enabled"
-    value = "false"
-  }
-  set {
-    name  = "reportsController.enabled"
-    value = "false"
-  }
+  set = [
+    { name = "backgroundController.enabled", value = "false" },
+    { name = "cleanupController.enabled", value = "false" },
+    { name = "reportsController.enabled", value = "false" },
+  ]
 }
